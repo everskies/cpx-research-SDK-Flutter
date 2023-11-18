@@ -6,7 +6,6 @@ import 'package:cpx_research_sdk_flutter/utils/network_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 enum BrowserTab { home, settings, help }
 
@@ -22,17 +21,12 @@ class BrowserView extends StatefulWidget {
 class _BrowserViewState extends State<BrowserView> {
   Controller controller = Controller.controller;
   bool isLoading = true;
-  WebViewController? _controller;
   late List pages;
   late BrowserTab activeTab;
   bool isAlertDisplayed = false;
 
   /// [loadURL] loads the url in the webview
   void loadURL(int index) {
-    if (_controller != null) {
-      _controller!.loadUrl(pages[index]);
-      CPXLogger.log("Load url: " + pages[index]);
-    }
   }
 
   @override
@@ -135,29 +129,6 @@ class _BrowserViewState extends State<BrowserView> {
             Expanded(
               child: Stack(
                 children: [
-                  WebView(
-                    onWebViewCreated: (WebViewController c) => _controller = c,
-                    javascriptMode: JavascriptMode.unrestricted,
-                    initialUrl: pages[activeTab == BrowserTab.settings ? 1 : 0],
-                    onPageFinished: (finish) {
-                      setState(() => isLoading = false);
-                    },
-                    onPageStarted: (start) {
-                      setState(() => isLoading = true);
-                    },
-                    onWebResourceError: (error) {
-                      HapticFeedback.selectionClick();
-                      setState(() => isAlertDisplayed = true);
-                      CPXLogger.log("Browser error: " +
-                          error.errorCode.toString() +
-                          " | " +
-                          error.description);
-                      NetworkService().onWebViewError(
-                          error.errorCode.toString(),
-                          error.description,
-                          error.failingUrl ?? "no url");
-                    },
-                  ),
                   if (isLoading)
                     LinearProgressIndicator(
                       valueColor: new AlwaysStoppedAnimation<Color>(
