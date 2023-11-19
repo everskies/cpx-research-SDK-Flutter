@@ -24,13 +24,13 @@ class _BrowserViewState extends State<BrowserView> {
   Controller controller = Controller.controller;
   late final WebViewController webViewController;
   bool isLoading = true;
-  late List pages;
+  late List<Uri> pages;
   late BrowserTab activeTab;
   bool isAlertDisplayed = false;
 
   /// [loadURL] loads the url in the webview
   void loadURL(int index) {
-    webViewController.loadRequest(Uri.parse(pages[index]));
+    webViewController.loadRequest(pages[index]);
     CPXLogger.log("Load url: " + pages[index]);
   }
 
@@ -39,9 +39,9 @@ class _BrowserViewState extends State<BrowserView> {
     super.initState();
     activeTab = widget.currentTab;
     pages = [
-      NetworkService().getHomeURL().toString(),
-      NetworkService().getSettingsURL().toString(),
-      NetworkService().getHelpURL().toString(),
+      NetworkService().getHomeURL(),
+      NetworkService().getSettingsURL(),
+      NetworkService().getHelpURL(),
     ];
 
     webViewController = WebViewController(
@@ -65,7 +65,7 @@ class _BrowserViewState extends State<BrowserView> {
           NetworkService().onWebViewError(
               error.errorCode.toString(),
               error.description,
-              error.failingUrl ?? "no url");
+              error.url ?? "no url");
         },
       ));
     loadURL(activeTab == BrowserTab.settings ? 1 : 0);
