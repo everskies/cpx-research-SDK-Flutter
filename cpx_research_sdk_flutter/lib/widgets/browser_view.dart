@@ -31,7 +31,7 @@ class _BrowserViewState extends State<BrowserView> {
   /// [loadURL] loads the url in the webview
   void loadURL(int index) {
     webViewController.loadRequest(pages[index]);
-    CPXLogger.log("Load url: " + pages[index]);
+    CPXLogger.log("Load url: " + pages[index].toString());
   }
 
   @override
